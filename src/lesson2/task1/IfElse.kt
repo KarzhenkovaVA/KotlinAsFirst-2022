@@ -3,8 +3,7 @@
 package lesson2.task1
 
 import lesson1.task1.discriminant
-import kotlin.math.max
-import kotlin.math.sqrt
+import kotlin.math.*
 
 // Урок 2: ветвления (здесь), логический тип (см. 2.2).
 // Максимальное количество баллов = 6
@@ -69,8 +68,8 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int): String = when {
-    ((age % 100) in 10..20) -> "$age лет"
-    (age % 10 == 1) -> "$age год"
+    (age % 100) in 10..20 -> "$age лет"
+    age % 10 == 1 -> "$age год"
     (age % 10 == 2) or (age % 10 == 3) or (age % 10 == 4) -> "$age года"
     else -> "$age лет"
 }
@@ -131,9 +130,12 @@ fun rookOrBishopThreatens(
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
 ): Int = when {
-    (kingX != rookX) and (kingY != rookY) and (kotlin.math.abs(kingX - bishopX) != kotlin.math.abs(kingY - bishopY)) -> 0
-    ((kingX == rookX) or (kingY == rookY)) and (kotlin.math.abs(kingX - bishopX) != kotlin.math.abs(kingY - bishopY)) -> 1
-    (kingX != rookX) and (kingY != rookY) and (kotlin.math.abs(kingX - bishopX) == kotlin.math.abs(kingY - bishopY)) -> 2
+    (kingX != rookX) and (kingY != rookY)
+            and (abs(kingX - bishopX) != abs(kingY - bishopY)) -> 0
+    ((kingX == rookX) or (kingY == rookY))
+            and (abs(kingX - bishopX) != abs(kingY - bishopY)) -> 1
+    (kingX != rookX) and (kingY != rookY)
+            and (abs(kingX - bishopX) == abs(kingY - bishopY)) -> 2
     else -> 3
 }
 
@@ -151,9 +153,12 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     val a = x[0]
     val b = x[1]
     val c = x[2]
-    if ((c * c) == (a * a + b * b)) return 1
-    if ((c * c) < (a * a + b * b)) return 0
-    if (a + b > c) return 2 else return -1
+    return when {
+        (c * c) == (a * a + b * b) -> 1
+        (c * c) < (a * a + b * b) -> 0
+        a + b > c -> 2
+        else -> -1
+    }
 }
 
 /**

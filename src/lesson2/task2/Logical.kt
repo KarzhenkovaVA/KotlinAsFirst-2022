@@ -3,6 +3,7 @@
 package lesson2.task2
 
 import lesson1.task1.sqr
+import kotlin.math.*
 
 /**
  * Пример
@@ -29,7 +30,8 @@ fun isNumberHappy(number: Int): Boolean =
  * Считать, что ферзи не могут загораживать друг друга.
  */
 fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
-    (x1 == x2) or (y1 == y2) or (kotlin.math.abs(x1-y1) == kotlin.math.abs(x2-y2))
+    ((x1 == x2) or (y1 == y2) or (abs(x1 - y1) == abs(x2 - y2))) and
+            (abs(abs(x1 - x2) - abs(y1 - y2)) != 1)
 
 
 /**
@@ -42,9 +44,9 @@ fun daysInMonth(month: Int, year: Int): Int = when (month) {
     1, 3, 5, 7, 8, 10, 12 -> 31
     4, 6, 9, 11 -> 30
     else -> when {
-        (year % 4 != 0) -> 28
-        (year % 100 != 0) -> 29
-        (year % 400 == 0) -> 29
+        year % 4 != 0 -> 28
+        year % 100 != 0 -> 29
+        year % 400 == 0 -> 29
         else -> 28
     }
 }
@@ -60,7 +62,7 @@ fun daysInMonth(month: Int, year: Int): Int = when (month) {
 fun circleInside(
     x1: Double, y1: Double, r1: Double,
     x2: Double, y2: Double, r2: Double
-): Boolean = kotlin.math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) <= r2 - r1
+): Boolean = sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) <= r2 - r1
 
 /**
  * Средняя (3 балла)
@@ -72,4 +74,6 @@ fun circleInside(
  * Вернуть true, если кирпич пройдёт
  */
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean =
-    ((r >= a) and (s >= b)) or ((r >= a) and (s >= c)) or ((r >= b) and (s >= a)) or ((r >= b) and (s >= c)) or ((r >= c) and (s >= a)) or ((r >= c) and (s >= b))
+    ((r >= a) and (s >= b)) or ((r >= a) and (s >= c)) or
+            ((r >= b) and (s >= a)) or ((r >= b) and (s >= c)) or
+            ((r >= c) and (s >= a)) or ((r >= c) and (s >= b))
