@@ -74,14 +74,13 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun digitNumber(n: Int): Int {
-    var count = 0
+    var counter = 1
     var number = n
-    if (number == 0) return 1
-    while (number > 0) {
-        count++
+    while (true) {
         number /= 10
+        if (number == 0) return counter
+        counter++
     }
-    return count
 }
 
 /**
@@ -159,8 +158,10 @@ fun collatzSteps(x: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
-    for (i in min(m, n) downTo 2) {
-        if ((m % i == 0) && (n % i == 0)) return n * m / i
+    val minimum = min(m, n)
+    if (m % minimum == 0 && n % minimum == 0) return n * m / minimum
+    for (i in sqrt(minimum.toDouble()).toInt() downTo 2) {
+        if (m % i == 0 && n % i == 0) return n * m / i
     }
     return m * n
 }
@@ -173,8 +174,10 @@ fun lcm(m: Int, n: Int): Int {
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
-    for (i in 2..min(m, n)) {
-        if ((m % i == 0) && (n % i == 0)) return false
+    val minimum = min(m, n)
+    if (m % minimum == 0 && n % minimum == 0) return false
+    for (i in 2..sqrt(minimum.toDouble()).toInt()) {
+        if (m % i == 0 && n % i == 0) return false
     }
     return true
 }
@@ -238,7 +241,7 @@ fun hasDifferentDigits(n: Int): Boolean {
  */
 fun sin(x: Double, eps: Double): Double {
     var result = 0.0
-    val helper = x - 2 * PI * (x / 2 / PI).toInt()
+    val helper = x % (2 * PI)
     var delta = helper
     var counter = 2
     val xSqr = -sqr(helper)
@@ -261,7 +264,7 @@ fun sin(x: Double, eps: Double): Double {
  */
 fun cos(x: Double, eps: Double): Double {
     var result = 0.0
-    val helper = x - 2 * PI * (x / 2 / PI).toInt()
+    val helper = x % (2 * PI)
     var delta = 1.0
     var counter = 1
     val xSqr = -sqr(helper)
@@ -282,15 +285,7 @@ fun cos(x: Double, eps: Double): Double {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun numOfDigits(n: Int): Int {
-    var counter = 1
-    var number = n
-    while (true) {
-        number /= 10
-        if (number == 0) return counter
-        counter++
-    }
-}
+
 fun digitFromPos(n: Int, pos: Int): Int {
     var number = n
     var counter = pos
@@ -303,7 +298,7 @@ fun squareSequenceDigit(n: Int): Int {
     while (true) {
         counter++
         val figureSqr = sqr(counter)
-        length -= numOfDigits(figureSqr)
+        length -= digitNumber(figureSqr)
         if (length <= 0) return digitFromPos(figureSqr, -length)
     }
 }
@@ -325,7 +320,7 @@ fun fibSequenceDigit(n: Int): Int {
         val sum = counter1 + counter2
         counter1 = counter2
         counter2 = sum
-        length -= numOfDigits(counter1)
+        length -= digitNumber(counter1)
         if (length <= 0) return digitFromPos(counter1, -length)
     }
 }
