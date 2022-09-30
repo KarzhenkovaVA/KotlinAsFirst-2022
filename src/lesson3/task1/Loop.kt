@@ -175,6 +175,7 @@ fun lcm(m: Int, n: Int): Int {
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
     val minimum = min(m, n)
+    if (minimum < 2) return true
     if (m % minimum == 0 && n % minimum == 0) return false
     for (i in 2..sqrt(minimum.toDouble()).toInt()) {
         if (m % i == 0 && n % i == 0) return false
