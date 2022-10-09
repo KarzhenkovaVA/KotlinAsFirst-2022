@@ -123,26 +123,16 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double {
-    var abs = 0.0
-    for (i in 0 until v.size) {
-        abs += sqr(v[i])
-    }
-    return sqrt(abs)
-}
+fun abs(v: List<Double>): Double = sqrt(v.sumOf { sqr(it) })
 
 /**
  * Простая (2 балла)
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double {
-    var sum = 0.0
-    if (list.size == 0) return 0.0
-    for (i in 0 until list.size) {
-        sum += list[i]
-    }
-    return sum / list.size
+fun mean(list: List<Double>): Double = when {
+    list.isEmpty() -> 0.0
+    else -> list.sum() / list.size
 }
 
 /**
@@ -155,9 +145,7 @@ fun mean(list: List<Double>): Double {
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
     val change = mean(list)
-    for (i in 0 until list.size) {
-        list[i] -= change
-    }
+    list.replaceAll { it - change }
     return list
 }
 
@@ -203,13 +191,10 @@ fun polynom(p: List<Int>, x: Int): Int {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
-    if (list.size == 0) return list
-    var sum1 = list[0]
-    var sum2 = list[0]
-    for (i in 1 until list.size) {
-        sum1 += list[i]
-        list[i] += sum2
-        sum2 = sum1
+    var sum = 0
+    for (i in 0 until list.size) {
+        sum += list[i]
+        list[i] = sum
     }
     return list
 }
@@ -246,7 +231,6 @@ fun factorize(n: Int): List<Int> {
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
 fun factorizeToString(n: Int): String {
-    if (isPrime(n)) return n.toString()
     val result = factorize(n)
     return result.joinToString(separator = "*")
 }
@@ -280,14 +264,12 @@ fun convert(n: Int, base: Int): List<Int> {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
-fun convertToString(n: Int, base: Int): String {
-    var alphabet = mutableListOf<Char>()
-    for (i in '0'..'9') alphabet.add(i)
-    for (i in 'a'..'z') alphabet.add(i)
-    val result = StringBuilder()
-    for (i in convert(n, base)) result.append(alphabet[i])
-    return result.toString()
+fun digitToChar(n: Int) = when (n) {
+    in 0..9 -> '0' + n
+    else -> 'a' + n - 10
 }
+fun convertToString(n: Int, base: Int): String =
+    convert(n, base).map { digitToChar(it) }.joinToString("")
 
 /**
  * Средняя (3 балла)
@@ -318,8 +300,8 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * (например, str.toInt(base)), запрещается.
  */
 fun charToDigit(symbol: Char): Int = when (symbol) {
-    in '0'..'9' -> symbol.code - '0'.code
-    else -> symbol.code - 'a'.code + 10
+    in '0'..'9' -> symbol - '0'
+    else -> symbol - 'a' + 10
 }
 
 fun decimalFromString(str: String, base: Int): Int = decimal(str.map { charToDigit(it) }, base)
@@ -344,7 +326,7 @@ fun roman(n: Int): String {
     val array = arrayOf("IVX", "XLC", "CDM")
     for ((index, symbol) in str.withIndex()) {
         var pos = str.length - index - 1
-        val digit = symbol.code - '0'.code
+        val digit = symbol - '0'
         when (digit) {
             in 1..3 -> appendSymbols(result, array[pos][0], digit)
             in 4..8 -> {
