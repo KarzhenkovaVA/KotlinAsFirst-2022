@@ -244,10 +244,10 @@ fun convert(n: Int, base: Int): List<Int> {
     var result = mutableListOf<Int>()
     var number = n
     while (number > 0) {
-        result.add(0, number % base)
+        result.add(number % base)
         number /= base
     }
-    return result
+    return result.reversed()
 }
 
 /**
