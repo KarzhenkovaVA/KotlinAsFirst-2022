@@ -235,6 +235,7 @@ class Tests {
         assertFalse(canBuildFrom(emptyList(), "foo"))
         assertTrue(canBuildFrom(listOf('a', 'b', 'o'), "baobab"))
         assertFalse(canBuildFrom(listOf('a', 'm', 'r'), "Marat"))
+        assertFalse(canBuildFrom(listOf('b', 'o'), "baobab"))
     }
 
     @Test
@@ -267,6 +268,21 @@ class Tests {
     @Test
     @Tag("5")
     fun propagateHandshakes() {
+        assertEquals(
+            mapOf(
+                "AAA" to setOf("BBB", "CCC", "DDD"),
+                "BBB" to setOf("CCC", "DDD"),
+                "CCC" to setOf("DDD"),
+                "DDD" to setOf(),
+            ),
+            propagateHandshakes(
+                mapOf(
+                    "AAA" to setOf("BBB"),
+                    "BBB" to setOf("CCC"),
+                    "CCC" to setOf("DDD"),
+                ),
+            )
+        )
         assertEquals(
             mapOf(
                 "Marat" to setOf("Mikhail", "Sveta"),
