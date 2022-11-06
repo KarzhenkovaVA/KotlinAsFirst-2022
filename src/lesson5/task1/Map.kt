@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import java.util.*
+
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
 // Рекомендуемое количество баллов = 9
@@ -359,4 +361,38 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+fun newPacks(
+    packs: List<Pair<Int, Pair<Int, Set<String>>>>,
+    item: Pair<String, Pair<Int, Int>>
+): List<Pair<Int, Pair<Int, Set<String>>>> {
+    val result = packs.toMutableSet()
+    result.add(item.second.first to (item.second.second to setOf(item.first)))
+
+    result.addAll(packs.map {
+        ((it.first + item.second.first)
+                to ((it.second.first + item.second.second)
+                to (it.second.second + item.first)))
+    })
+
+    var price = 0
+    return result.sortedWith { a, b -> a.first.compareTo(b.first) }.filter {
+        when {
+            it.second.first < price -> false
+            else -> {
+                price = it.second.first; true
+            }
+        }
+    }.toSortedSet { a, b -> a.first.compareTo(b.first) }.toList()
+}
+
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    var packs = listOf<Pair<Int, Pair<Int, Set<String>>>>()
+    for (item in treasures) {
+        packs = newPacks(packs, item.toPair())
+    }
+
+    for (item in packs.reversed()) {
+        if (item.first < capacity) return item.second.second
+    }
+    return setOf()
+}
