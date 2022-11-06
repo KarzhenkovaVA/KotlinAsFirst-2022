@@ -348,4 +348,71 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun helper99(n: Int): String {
+    val result = StringBuilder()
+    val list = listOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
+    when (n) {
+        0 -> result.append("")
+        in 1..9 -> result.append(list[n])
+        in 11..19 -> {
+            var newWord = list[(n / 10)]
+            if (newWord.endsWith("а")) newWord = list[(n / 10)].replace("а", "e")
+            if (newWord.endsWith("е") || newWord.endsWith("ь")) {
+                val index = newWord.lastIndex
+                newWord = list[(n / 10)].removeRange(index, index)
+            }
+            result.append(newWord + "надцать")
+        }
+
+        in 20..39 -> {
+            if (n % 10 == 0) result.append(list[(n / 10)] + "дцать")
+            else result.append(list[(n / 10)] + "дцать " + list[(n % 10)])
+        }
+
+        in 40..49 -> {
+            if (n % 10 == 0) result.append("сорок")
+            else result.append("сорок " + list[(n % 10)])
+        }
+
+        in 50..89 -> {
+            if (n % 10 == 0) result.append(list[(n / 10)] + "десят")
+            else result.append(list[(n / 10)] + "десят " + list[(n % 10)])
+        }
+
+        in 90..99 -> {
+            if (n % 10 == 0) result.append("девяносто")
+            else result.append("девяносто " + list[(n % 10)])
+        }
+    }
+    return result.toString()
+}
+fun helper999(n: Int): String {
+    val result = StringBuilder()
+    val list = listOf("сто", "две", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
+    when (n / 100) {
+        1 -> result.append(list[n - 1] + helper99(n % 100))
+        2 -> result.append(list[n - 1] + "сти" + helper99(n % 100))
+        3, 4 -> result.append(list[n - 1] + "ста" + helper99(n % 100))
+        in 5..9 -> result.append(list[n - 1] + "сот" + helper99(n % 100))
+    }
+    if (result.isEmpty()) return ""
+    return result.toString()
+}
+fun helper999999(n: Int): String {
+    val result = StringBuilder()
+    when ((n / 1000) % 10) {
+        1 -> result.append(helper99(n / 1000) + "тысяча" + helper99(n % 1000))
+        in 2..4 -> result.append(helper99(n / 1000) + "тысячи" + helper99(n % 1000))
+        in 3..9 -> result.append(helper99(n / 1000) + "тысяч" + helper99(n % 1000))
+    }
+    return result.toString()
+}
+fun russian(n: Int): String {
+    when (n.toString().length) {
+        0 -> return ""
+        in 1..2 -> return helper99(n)
+        3 -> return helper999(n)
+        in 4..6 -> helper999999(n)
+    }
+    return ""
+}
