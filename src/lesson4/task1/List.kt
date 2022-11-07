@@ -265,6 +265,7 @@ fun digitToChar(n: Int) = when (n) {
     in 0..9 -> '0' + n
     else -> 'a' + n - 10
 }
+
 fun convertToString(n: Int, base: Int): String =
     convert(n, base).map { digitToChar(it) }.joinToString("")
 
@@ -348,71 +349,133 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun helper99(n: Int): String {
-    val result = StringBuilder()
-    val list = listOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
+fun numToStr1(n: Int, flag: Boolean): String {
+    if (flag) {
+        return when (n) {
+            1 -> "одна"
+            2 -> "две"
+            else -> numToStr1(n, false)
+        }
+    } else {
+        return when (n) {
+            1 -> "один"
+            2 -> "два"
+            3 -> "три"
+            4 -> "четыре"
+            5 -> "пять"
+            6 -> "шесть"
+            7 -> "семь"
+            8 -> "восемь"
+            9 -> "девять"
+            else -> ""
+        }
+    }
+}
+
+fun numToStr2(n: Int): String {
+    val figureTrue = numToStr1((n % 10), true)
+    val figureFalse = numToStr1((n % 10), false)
+    if (n in 11..19) {
+        return when (n) {
+            11, 13 -> figureFalse + "надцать"
+            12 -> figureTrue + "надцать"
+            in 14..19 -> figureFalse.removeRange(figureFalse.lastIndex, figureFalse.lastIndex) + "надцать"
+            else -> ""
+        }
+    } else {
+        return when (n / 10) {
+            1 -> "десять"
+            2, 3 -> numToStr1((n / 10), false) + "дцать"
+            4 -> "сорок"
+            in 5..8 -> numToStr1((n / 10), false) + "десят"
+            9 -> "девяносто"
+            else -> ""
+        }
+    }
+}
+
+fun numToStr3(n: Int): String {
+    val figureTrue = numToStr1(n / 100, true)
+    val figureFalse = numToStr1(n / 100, false)
+    return when (n / 100) {
+        1 -> "сто"
+        2 -> figureTrue + "сти"
+        3, 4 -> figureFalse + "ста"
+        in 5..9 -> figureFalse + "сот"
+        else -> ""
+    }
+}
+
+fun numToStr4(n: Int): String =
     when (n) {
-        0 -> result.append("")
-        in 1..9 -> result.append(list[n])
-        in 11..19 -> {
-            var newWord = list[(n / 10)]
-            if (newWord.endsWith("а")) newWord = list[(n / 10)].replace("а", "e")
-            if (newWord.endsWith("е") || newWord.endsWith("ь")) {
-                val index = newWord.lastIndex
-                newWord = list[(n / 10)].removeRange(index, index)
-            }
-            result.append(newWord + "надцать")
-        }
-
-        in 20..39 -> {
-            if (n % 10 == 0) result.append(list[(n / 10)] + "дцать")
-            else result.append(list[(n / 10)] + "дцать " + list[(n % 10)])
-        }
-
-        in 40..49 -> {
-            if (n % 10 == 0) result.append("сорок")
-            else result.append("сорок " + list[(n % 10)])
-        }
-
-        in 50..89 -> {
-            if (n % 10 == 0) result.append(list[(n / 10)] + "десят")
-            else result.append(list[(n / 10)] + "десят " + list[(n % 10)])
-        }
-
-        in 90..99 -> {
-            if (n % 10 == 0) result.append("девяносто")
-            else result.append("девяносто " + list[(n % 10)])
-        }
+        1 -> "тысяча"
+        in 2..4 -> "тысячи"
+        in 5..9 -> "тысяч"
+        else -> ""
     }
-    return result.toString()
-}
-fun helper999(n: Int): String {
-    val result = StringBuilder()
-    val list = listOf("сто", "две", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
-    when (n / 100) {
-        1 -> result.append(list[n - 1] + helper99(n % 100))
-        2 -> result.append(list[n - 1] + "сти" + helper99(n % 100))
-        3, 4 -> result.append(list[n - 1] + "ста" + helper99(n % 100))
-        in 5..9 -> result.append(list[n - 1] + "сот" + helper99(n % 100))
-    }
-    if (result.isEmpty()) return ""
-    return result.toString()
-}
-fun helper999999(n: Int): String {
-    val result = StringBuilder()
-    when ((n / 1000) % 10) {
-        1 -> result.append(helper99(n / 1000) + "тысяча" + helper99(n % 1000))
-        in 2..4 -> result.append(helper99(n / 1000) + "тысячи" + helper99(n % 1000))
-        in 3..9 -> result.append(helper99(n / 1000) + "тысяч" + helper99(n % 1000))
-    }
-    return result.toString()
-}
+
+//fun resultBuilder(n: Int): String {
+    //val result = StringBuilder()
+    //result.append(numToStr3(n - (n % 100)))
+    //result.append(numToStr2(n - (n - (n % 100)) + n % 10))
+    //result.append(numToStr1(n, false))
+    //return result.toString()
+//}
+
 fun russian(n: Int): String {
+    val result = StringBuilder()
+    var figure = 0
+    if (n >= 1000) figure = (n / 1000) % 10
     when (n.toString().length) {
-        0 -> return ""
-        in 1..2 -> return helper99(n)
-        3 -> return helper999(n)
-        in 4..6 -> helper999999(n)
+        1 -> result.append(numToStr1(n, false))
+        2 -> {
+            result.append(numToStr2(n % 100) + " ")
+            result.append(numToStr1(n % 10, false))
+        }
+
+        3 -> {
+            result.append(numToStr3(n) + " ")
+            result.append(numToStr2(n % 100) + " ")
+            result.append(numToStr1(n % 10, false))
+        }
+
+        4 -> {
+            if (figure == 1) result.append("тысяча ")
+            else {
+                result.append(numToStr1(figure, true) + " ")
+                result.append(numToStr4(figure) + " ")
+            }
+            result.append(numToStr3(n % 1000) + " ")
+            result.append(numToStr2(n % 100) + " ")
+            result.append(numToStr1(n % 10, false))
+        }
+
+        5 -> {
+            result.append(numToStr2(n / 1000) + " ")
+            result.append(numToStr1(figure, true) + " ")
+            if (figure == 1) result.append("тысяча ")
+            else {
+                result.append(numToStr4(figure) + " ")
+            }
+            result.append(numToStr3(n % 1000) + " ")
+            result.append(numToStr2(n % 100) + " ")
+            result.append(numToStr1(n % 10, false))
+        }
+
+        6 -> {
+            result.append(numToStr3(n / 1000) + " ")
+            result.append(numToStr2(((n - (n / 100000)) / 100)) + " ")
+            result.append(numToStr1(figure, true) + " ")
+            if (figure == 1) result.append("тысяча ")
+            else {
+                result.append(numToStr4(figure) + " ")
+            }
+            result.append(numToStr3(n % 1000) + " ")
+            result.append(numToStr2(n % 100) + " ")
+            result.append(numToStr1(n % 10, false))
+        }
     }
-    return ""
+    return result.toString()
 }
+//разобраться с 11..19
+//сделать функцию, чтобы сократить код

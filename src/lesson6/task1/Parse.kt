@@ -2,6 +2,8 @@
 
 package lesson6.task1
 
+import lesson2.task2.daysInMonth
+
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
 // Рекомендуемое количество баллов = 11
@@ -74,7 +76,39 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+fun dateStrToDigit(str: String): String {
+    val data = str.split(" ")
+    val listOfMonths = listOf(
+        "января",
+        "февраля",
+        "марта",
+        "апреля",
+        "мая",
+        "июня",
+        "июля",
+        "августа",
+        "сентября",
+        "октября",
+        "ноября",
+        "декабря"
+    )
+    if (data.size != 3 ||
+        data[1] !in listOfMonths ||
+        (data[0].toInt() >= 29 &&
+                daysInMonth(listOfMonths.indexOf(data[1]) + 1, data[2].toInt()) != data[0].toInt())
+    )
+        return ""
+
+    return try {
+        String.format(
+            "%02d.%02d.%02d", data[0].toInt(),
+            listOfMonths.indexOf(data[1]) + 1,
+            data[2].toInt()
+        )
+    } catch (e: Exception) {
+        ""
+    }
+}
 
 /**
  * Средняя (4 балла)
@@ -86,7 +120,33 @@ fun dateStrToDigit(str: String): String = TODO()
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+    val data = digital.split(".")
+    val listOfMonths = listOf(
+        "января",
+        "февраля",
+        "марта",
+        "апреля",
+        "мая",
+        "июня",
+        "июля",
+        "августа",
+        "сентября",
+        "октября",
+        "ноября",
+        "декабря"
+    )
+    if (data.size != 3 ||
+        (data[0].toInt() >= 29 &&
+                daysInMonth(data[1].toInt(), data[2].toInt()) != data[0].toInt())
+    ) return ""
+    val month = listOfMonths[data[1].removeRange(0, 0).toInt() - 1]
+    return try{
+        String.format("%2d %s %4d", data[0].toInt(), month, data[2].toInt())
+    } catch (e: Exception) {
+        ""
+    }
+}
 
 /**
  * Средняя (4 балла)
