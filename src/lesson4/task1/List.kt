@@ -401,12 +401,14 @@ fun numToStr3(n: Int): String {
     }
 }
 
-fun thousandWord(n: Int): String =
-    when (n) {
+fun thousandWord(n: Int): String {
+    if (n in 11..19) return "тысяч"
+    return when (n % 10) {
         1 -> "тысяча"
         in 2..4 -> "тысячи"
         else -> "тысяч"
     }
+}
 
 fun resultBuilder2(n: Int, thousands: Boolean): List<String> {
     if (n == 0) return listOf()
@@ -430,7 +432,7 @@ fun russian(n: Int): String {
     val low = n % 1000
     if (high > 0) {
         result.addAll(resultBuilder3(high, true))
-        result.add(thousandWord(high % 10))
+        result.add(thousandWord(high % 100))
     }
     result.addAll(resultBuilder3(low, false))
     return result.joinToString(" ")
