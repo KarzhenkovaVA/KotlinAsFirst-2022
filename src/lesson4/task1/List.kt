@@ -410,10 +410,12 @@ fun thousandWord(n: Int): String =
 
 fun resultBuilder2(n: Int, thousands: Boolean): List<String> {
     if (n == 0) return listOf()
-    if (n < 20) return listOf(numToStr1(n, thousands && n in 1..2))
     val figure = n % 10
-    return listOf(numToStr2(n / 10), numToStr1(figure, thousands && figure in 1..2))
+    return if (n < 20) listOf(numToStr1(n, thousands && n in 1..2))
+    else if (figure == 0) listOf(numToStr2(n / 10))
+    else listOf(numToStr2(n / 10), numToStr1(figure, thousands && figure in 1..2))
 }
+
 fun resultBuilder3(n: Int, thousands: Boolean): List<String> {
     val figure = n / 100
     if (figure == 0) return resultBuilder2(n, thousands)
