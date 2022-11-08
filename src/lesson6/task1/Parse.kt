@@ -76,35 +76,30 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
+fun listOfMonths() = listOf(
+    "января",
+    "февраля",
+    "марта",
+    "апреля",
+    "мая",
+    "июня",
+    "июля",
+    "августа",
+    "сентября",
+    "октября",
+    "ноября",
+    "декабря"
+)
 fun dateStrToDigit(str: String): String {
     val data = str.split(" ")
-    val listOfMonths = listOf(
-        "января",
-        "февраля",
-        "марта",
-        "апреля",
-        "мая",
-        "июня",
-        "июля",
-        "августа",
-        "сентября",
-        "октября",
-        "ноября",
-        "декабря"
-    )
-    if (data.size != 3 ||
-        data[1] !in listOfMonths ||
-        (data[0].toInt() >= 29 &&
-                daysInMonth(listOfMonths.indexOf(data[1]) + 1, data[2].toInt()) != data[0].toInt())
-    )
-        return ""
-
+    if (data.size != 3) return ""
+    val month = listOfMonths().indexOf(data[1]) + 1
+    if (month == 0) return ""
     return try {
-        String.format(
-            "%02d.%02d.%02d", data[0].toInt(),
-            listOfMonths.indexOf(data[1]) + 1,
-            data[2].toInt()
-        )
+        val day = data[0].toInt()
+        val year = data[2].toInt()
+        if (day <= 0 || year <= 0 || daysInMonth(month, year) < day) ""
+        else String.format("%02d.%02d.%02d", day, month, year)
     } catch (e: Exception) {
         ""
     }
@@ -122,27 +117,13 @@ fun dateStrToDigit(str: String): String {
  */
 fun dateDigitToStr(digital: String): String {
     val data = digital.split(".")
-    val listOfMonths = listOf(
-        "января",
-        "февраля",
-        "марта",
-        "апреля",
-        "мая",
-        "июня",
-        "июля",
-        "августа",
-        "сентября",
-        "октября",
-        "ноября",
-        "декабря"
-    )
-    if (data.size != 3 ||
-        (data[0].toInt() >= 29 &&
-                daysInMonth(data[1].toInt(), data[2].toInt()) != data[0].toInt())
-    ) return ""
-    val month = listOfMonths[data[1].removeRange(0, 0).toInt() - 1]
-    return try{
-        String.format("%2d %s %4d", data[0].toInt(), month, data[2].toInt())
+    if (data.size != 3) return ""
+    return try {
+        val day = data[0].toInt()
+        val month = data[1].toInt()
+        val year = data[2].toInt()
+        if (day <= 0 || month <= 0 || year <= 0 || daysInMonth(month, year) < day) ""
+        else String.format("%d %s %d", day, listOfMonths()[month - 1], year)
     } catch (e: Exception) {
         ""
     }
