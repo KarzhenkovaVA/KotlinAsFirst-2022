@@ -367,115 +367,69 @@ fun numToStr1(n: Int, flag: Boolean): String {
             7 -> "семь"
             8 -> "восемь"
             9 -> "девять"
-            else -> ""
+            10 -> "десят"
+            11 -> "одиннадцать"
+            12 -> "двенадцать"
+            13 -> "тринадцать"
+            14 -> "четырнадцать"
+            15 -> "пятнадцать"
+            16 -> "шестнадцать"
+            17 -> "семнадцать"
+            18 -> "восемнадцать"
+            19 -> "девятнадцать"
+            else -> "*"
         }
     }
 }
 
-fun numToStr2(n: Int): String {
-    val figureTrue = numToStr1((n % 10), true)
-    val figureFalse = numToStr1((n % 10), false)
-    if (n in 11..19) {
-        return when (n) {
-            11, 13 -> figureFalse + "надцать"
-            12 -> figureTrue + "надцать"
-            in 14..19 -> figureFalse.removeRange(figureFalse.lastIndex, figureFalse.lastIndex) + "надцать"
-            else -> ""
-        }
-    } else {
-        return when (n / 10) {
-            1 -> "десять"
-            2, 3 -> numToStr1((n / 10), false) + "дцать"
-            4 -> "сорок"
-            in 5..8 -> numToStr1((n / 10), false) + "десят"
-            9 -> "девяносто"
-            else -> ""
-        }
-    }
+fun numToStr2(n: Int): String = when (n) {
+    2, 3 -> numToStr1(n, false) + "дцать"
+    4 -> "сорок"
+    in 5..8 -> numToStr1(n, false) + "десят"
+    9 -> "девяносто"
+    else -> "**"
 }
 
 fun numToStr3(n: Int): String {
-    val figureTrue = numToStr1(n / 100, true)
-    val figureFalse = numToStr1(n / 100, false)
-    return when (n / 100) {
+    val figureFalse = numToStr1(n, false)
+    return when (n) {
         1 -> "сто"
-        2 -> figureTrue + "сти"
+        2 -> "двести"
         3, 4 -> figureFalse + "ста"
         in 5..9 -> figureFalse + "сот"
-        else -> ""
+        else -> "***"
     }
 }
 
-fun numToStr4(n: Int): String =
+fun thousandWord(n: Int): String =
     when (n) {
         1 -> "тысяча"
         in 2..4 -> "тысячи"
-        in 5..9 -> "тысяч"
-        else -> ""
+        else -> "тысяч"
     }
 
-//fun resultBuilder(n: Int): String {
-    //val result = StringBuilder()
-    //result.append(numToStr3(n - (n % 100)))
-    //result.append(numToStr2(n - (n - (n % 100)) + n % 10))
-    //result.append(numToStr1(n, false))
-    //return result.toString()
-//}
+fun resultBuilder2(n: Int, thousands: Boolean): List<String> {
+    if (n == 0) return listOf()
+    if (n < 20) return listOf(numToStr1(n, thousands && n in 1..2))
+    val figure = n % 10
+    return listOf(numToStr2(n / 10), numToStr1(figure, thousands && figure in 1..2))
+}
+fun resultBuilder3(n: Int, thousands: Boolean): List<String> {
+    val figure = n / 100
+    if (figure == 0) return resultBuilder2(n, thousands)
+    val result = mutableListOf(numToStr3(figure))
+    result.addAll(resultBuilder2(n % 100, thousands))
+    return result
+}
 
 fun russian(n: Int): String {
-    val result = StringBuilder()
-    var figure = 0
-    if (n >= 1000) figure = (n / 1000) % 10
-    when (n.toString().length) {
-        1 -> result.append(numToStr1(n, false))
-        2 -> {
-            result.append(numToStr2(n % 100) + " ")
-            result.append(numToStr1(n % 10, false))
-        }
-
-        3 -> {
-            result.append(numToStr3(n) + " ")
-            result.append(numToStr2(n % 100) + " ")
-            result.append(numToStr1(n % 10, false))
-        }
-
-        4 -> {
-            if (figure == 1) result.append("тысяча ")
-            else {
-                result.append(numToStr1(figure, true) + " ")
-                result.append(numToStr4(figure) + " ")
-            }
-            result.append(numToStr3(n % 1000) + " ")
-            result.append(numToStr2(n % 100) + " ")
-            result.append(numToStr1(n % 10, false))
-        }
-
-        5 -> {
-            result.append(numToStr2(n / 1000) + " ")
-            result.append(numToStr1(figure, true) + " ")
-            if (figure == 1) result.append("тысяча ")
-            else {
-                result.append(numToStr4(figure) + " ")
-            }
-            result.append(numToStr3(n % 1000) + " ")
-            result.append(numToStr2(n % 100) + " ")
-            result.append(numToStr1(n % 10, false))
-        }
-
-        6 -> {
-            result.append(numToStr3(n / 1000) + " ")
-            result.append(numToStr2(((n - (n / 100000)) / 100)) + " ")
-            result.append(numToStr1(figure, true) + " ")
-            if (figure == 1) result.append("тысяча ")
-            else {
-                result.append(numToStr4(figure) + " ")
-            }
-            result.append(numToStr3(n % 1000) + " ")
-            result.append(numToStr2(n % 100) + " ")
-            result.append(numToStr1(n % 10, false))
-        }
+    val result = mutableListOf<String>()
+    val high = n / 1000
+    val low = n % 1000
+    if (high > 0) {
+        result.addAll(resultBuilder3(high, true))
+        result.add(thousandWord(high % 10))
     }
-    return result.toString()
+    result.addAll(resultBuilder3(low, false))
+    return result.joinToString(" ")
 }
-//разобраться с 11..19
-//сделать функцию, чтобы сократить код
