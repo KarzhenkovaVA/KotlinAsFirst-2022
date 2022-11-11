@@ -373,7 +373,10 @@ fun newPacks(
     })
 
     var price = 0
-    return result.sortedWith { a, b -> a.first.compareTo(b.first) }.filter {
+    val helper = result
+        .sortedWith { a, b -> b.second.first.compareTo(a.second.first) }
+        .sortedWith { a, b -> a.first.compareTo(b.first) }
+    return helper.filter {
         when {
             it.second.first < price -> false
             else -> {

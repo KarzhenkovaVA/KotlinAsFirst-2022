@@ -343,7 +343,31 @@ class Tests {
     @Tag("8")
     fun bagPacking() {
         assertEquals(
-            setOf("0", "1"),
+            setOf("E"),
+            bagPacking(
+                mapOf(
+                    "A" to (1 to 1),
+                    "B" to (1 to 1),
+                    "C" to (1 to 1),
+                    "D" to (1 to 1),
+                    "E" to (2 to 3),
+                    "F" to (1 to 1)
+                ),
+                2
+            )
+        )
+        assertEquals(
+            setOf("1"),
+            bagPacking(
+                mapOf(
+                    "0" to (1 to 1),
+                    "1" to (1 to 2)
+                ),
+                1
+            )
+        )
+        assertEquals(
+            setOf("1", "0"),
             bagPacking(
                 mapOf(
                     "0" to (1 to 1),
