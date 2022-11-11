@@ -244,6 +244,10 @@ class Tests {
     fun extractRepeats() {
         assertEquals(
             emptyMap<String, Int>(),
+            extractRepeats(listOf(""))
+        )
+        assertEquals(
+            emptyMap<String, Int>(),
             extractRepeats(emptyList())
         )
         assertEquals(
@@ -338,6 +342,26 @@ class Tests {
     @Test
     @Tag("8")
     fun bagPacking() {
+        assertEquals(
+            setOf("0", "1"),
+            bagPacking(
+                mapOf(
+                    "0" to (1 to 1),
+                    "1" to (1 to 1),
+                    "2" to (1 to 1)
+                ),
+                2
+            )
+        )
+        assertEquals(
+            setOf("0"),
+            bagPacking(
+                mapOf(
+                    "0" to (1 to 1)
+                ),
+                1
+            )
+        )
         assertEquals(
             setOf("A", "D"),
             bagPacking(

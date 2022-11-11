@@ -252,8 +252,15 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
     for (symbol in list) {
         result[symbol] = (result[symbol] ?: 0) + 1
     }
-    return result
+    return result.filter { it.value > 1 }
 }
+//fun extractRepeats(list: List<String>): Map<String, Int> {
+    //val result = mutableMapOf<String, Int>()
+    //for (symbol in list) {
+        //result[symbol] = result.getOrDefault(symbol, 0) + 1
+   // }
+    //return result
+//}
 
 /**
  * Средняя (3 балла)
@@ -329,12 +336,11 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    for ((index1, element1) in list.withIndex()) {
-        for (index2 in index1 + 1 until list.size) {
-            if (element1 + list[index2] == number)
-                return Pair(index1, index2)
-
-        }
+    val neededNum = mutableMapOf<Int, Int>()
+    for (index in list.indices) {
+        val diff = number - list[index]
+        if (diff in neededNum.keys) return Pair(neededNum.getOrDefault(diff, -1), index)
+        neededNum[list[index]] = index
     }
     return Pair(-1, -1)
 }
@@ -391,7 +397,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     }
 
     for (item in packs.reversed()) {
-        if (item.first < capacity) return item.second.second
+        if (item.first <= capacity) return item.second.second
     }
     return setOf()
 }
