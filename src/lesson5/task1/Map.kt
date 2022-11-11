@@ -254,13 +254,6 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
     }
     return result.filter { it.value > 1 }
 }
-//fun extractRepeats(list: List<String>): Map<String, Int> {
-    //val result = mutableMapOf<String, Int>()
-    //for (symbol in list) {
-        //result[symbol] = result.getOrDefault(symbol, 0) + 1
-   // }
-    //return result
-//}
 
 /**
  * Средняя (3 балла)
