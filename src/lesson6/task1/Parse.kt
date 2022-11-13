@@ -3,6 +3,7 @@
 package lesson6.task1
 
 import lesson2.task2.daysInMonth
+import java.lang.StringBuilder
 
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
@@ -143,7 +144,16 @@ fun dateDigitToStr(digital: String): String {
  *
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String): String {
+    val match = Regex("""^\s*(\+[\s-]*\d+[\s-]*)?([\s-]*(\(([\s-]*\d)+[\s-]*\))?([\s-]*\d)+[\s-]*)$""")
+        .find(phone)
+    if (match != null) {
+        val result = match.groupValues
+        val setOfSymbols = setOf('-', ' ', '(', ')')
+        return (result[1] + result[2]).filter { it !in setOfSymbols }
+    }
+    return ""
+}
 
 /**
  * Средняя (5 баллов)
@@ -155,7 +165,16 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int {
+    val exp = Regex("""(\d+)(\s+(%|-)?)*""")
+    val measures = exp.replace(jumps, ";$1").split(";")
+    if (measures.size < 2) return -1
+    return try {
+        measures.drop(1).map { it.toInt() }.max()
+    } catch (e: Exception) {
+        -1
+    }
+}
 
 /**
  * Сложная (6 баллов)
@@ -168,7 +187,13 @@ fun bestLongJump(jumps: String): Int = TODO()
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    if (Regex("""^(\s(\d+)\s(([%-]*\+)|[%-]+))+$""").find(" $jumps") == null) return -1
+    val newJumps = Regex("""(\d+)\s[^\s+]+\s""").replace("$jumps ", "")
+    val newJumps1 = Regex("""\s\D+""").replace(newJumps, " ").split(" ")
+    if (newJumps1.size < 2) return -1
+    return newJumps1.dropLast(1).map { it.toInt() }.max()
+}
 
 /**
  * Сложная (6 баллов)
@@ -190,7 +215,21 @@ fun plusMinus(expression: String): Int = TODO()
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
+fun firstDuplicateIndex(str: String): Int {
+    val newStr = str.lowercase()
+    val spaces = str.withIndex().filter { it.value == ' ' }.map { it.index } + str.length
+    var pos = 0
+    var prevPos = 0
+    var prev = ""
+    for (elem in spaces) {
+        val word = newStr.substring(pos until elem)
+        if (word == prev) return prevPos
+        prevPos = pos
+        pos = elem + 1
+        prev = word
+    }
+    return -1
+}
 
 /**
  * Сложная (6 баллов)
