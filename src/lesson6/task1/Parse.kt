@@ -3,7 +3,6 @@
 package lesson6.task1
 
 import lesson2.task2.daysInMonth
-import java.lang.StringBuilder
 
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
@@ -219,7 +218,7 @@ fun firstDuplicateIndex(str: String): Int {
     val newStr = str.lowercase()
     val spaces = str.withIndex().filter { it.value == ' ' }.map { it.index } + str.length
     var pos = 0
-    var prevPos = 0
+    var prevPos = -1
     var prev = ""
     for (elem in spaces) {
         val word = newStr.substring(pos until elem)
