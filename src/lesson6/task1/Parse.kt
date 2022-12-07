@@ -3,6 +3,8 @@
 package lesson6.task1
 
 import lesson2.task2.daysInMonth
+import java.lang.IllegalArgumentException
+import java.util.IllformedLocaleException
 
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
@@ -164,7 +166,7 @@ fun flattenPhoneNumber(phone: String): String {
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int {
+fun bestLongJump1(jumps: String): Int {
     val exp = Regex("""(\d+)(\s+(%|-)?)*""")
     val measures = exp.replace(jumps, ";$1").split(";")
     if (measures.size < 2) return -1
@@ -173,6 +175,13 @@ fun bestLongJump(jumps: String): Int {
     } catch (e: Exception) {
         -1
     }
+}
+
+fun bestLongJump(jumps: String): Int {
+    if (Regex("""^((\d+)(\s+(%|-)?)*)+$""").find(jumps) == null) return -1
+    val newJumps = Regex("""\s\D+""").replace(jumps, " ").split(" ")
+    if (newJumps.size < 2) return -1
+    return newJumps.map { it.toInt() }.max()
 }
 
 /**
@@ -203,7 +212,22 @@ fun bestHighJump(jumps: String): Int {
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    if (Regex("""^((\d)(\s[+-]\s)?)+$""").find(expression) == null) throw IllegalArgumentException()
+    val figuresAndSigns = expression.split(" ")
+    var result = figuresAndSigns[0].toInt()
+    val minuses = mutableListOf<Int>()
+    val pluses = mutableListOf<Int>()
+    for ((index, element) in figuresAndSigns.withIndex()) {
+        if (element == "+") pluses.add(index)
+        if (element == "-") minuses.add(index)
+    }
+    for ((index, figure) in figuresAndSigns.withIndex()) {
+        if (index - 1 in pluses) result += figure.toInt()
+        if (index - 1 in minuses) result -= figure.toInt()
+    }
+    return result
+}
 
 /**
  * Сложная (6 баллов)
@@ -241,7 +265,17 @@ fun firstDuplicateIndex(str: String): Int {
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше нуля либо равны нулю.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    if (Regex("""^(\s([а-яА-Я])+\s(\d)+\.(\d)+;)+$""").find(" $description;") == null) return ""
+    val goods = description.split(";")
+    val goodsWithPrices = mutableMapOf<Double, String>()
+    for (element in goods) {
+        val helperList = element.trim().split(" ")
+        goodsWithPrices[helperList[1].toDouble()] = helperList[0]
+    }
+    val maximum = goodsWithPrices.maxOf { it.key }
+    return goodsWithPrices[maximum].toString()
+}
 
 /**
  * Сложная (6 баллов)

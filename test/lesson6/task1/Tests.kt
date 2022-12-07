@@ -77,6 +77,7 @@ class Tests {
         assertEquals(-1, bestLongJump("% - - % -"))
         assertEquals(754, bestLongJump("700 717 707 % 754"))
         assertEquals(-1, bestLongJump("700 + 700"))
+        assertEquals(-1, bestLongJump("706 % - 717 + 703"))
         assertEquals(-1, bestLongJump("700 + 780"))
     }
 
@@ -157,3 +158,19 @@ class Tests {
         assertThrows(IllegalStateException::class.java) { computeDeviceCells(20, ">>>>>>>>>>>>>", 12) }
     }
 }
+
+//@Test
+//fun myFun () {
+//  assertEquals(
+//    "ООО Горняк, Вбербанк, Политек Ведра",
+//  myFun(
+//    mapOf(
+//      "Производство напитков" to 4,
+//    "Горднодобывающая промышленность" to 12,
+//  "Банковские операции" to 9
+//            ),
+//          "ООО Горняк - Горнодобывающая промышленность - 100000 \nВбербанк - Банковские операции - 1900000
+//                Политек Ведра - Образование - 9000000"
+//   )
+//    )
+//}
