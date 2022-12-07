@@ -3,6 +3,9 @@
 package lesson7.task1
 
 import java.io.File
+import java.lang.StringBuilder
+import java.util.*
+import kotlin.math.*
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -63,7 +66,14 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Подчёркивание в середине и/или в конце строк значения не имеет.
  */
 fun deleteMarked(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    for (line in File(inputName).readLines()) {
+        if (!line.startsWith("_")) {
+            writer.write(line)
+            writer.newLine()
+        }
+    }
+    writer.close()
 }
 
 /**
@@ -75,7 +85,9 @@ fun deleteMarked(inputName: String, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    TODO()
+}
 
 
 /**
@@ -91,8 +103,24 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  * Исключения (жюри, брошюра, парашют) в рамках данного задания обрабатывать не нужно
  *
  */
+fun correctLetter(letter: String): String {
+    return when (letter) {
+        "ы" -> "и"
+        "Ы" -> "И"
+        "я" -> "а"
+        "Я" -> "А"
+        "ю" -> "у"
+        else -> "У"
+    }
+}
+
 fun sibilants(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    val reg = Regex("""([жчшщ])([ыяю])""", RegexOption.IGNORE_CASE)
+    val text = File(inputName).readText()
+    val newText = text.replace(reg) { it.groupValues[1] + correctLetter(it.groupValues[2]) }
+    writer.write(newText)
+    writer.close()
 }
 
 /**
@@ -112,8 +140,27 @@ fun sibilants(inputName: String, outputName: String) {
  * 4) Число строк в выходном файле должно быть равно числу строк во входном (в т. ч. пустых)
  *
  */
+fun appendSpaces(count: Int): String {
+    val result = StringBuilder()
+    for (i in 1..(count / 2)) {
+        result.append(" ")
+    }
+    return result.toString()
+}
+
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    var maxLength = 0
+    for (line in File(inputName).readLines()) {
+        if (line.length > maxLength) maxLength = line.length
+    }
+    for (line in File(inputName).readLines()) {
+        val newLine = line.trim()
+        writer.write(appendSpaces((maxLength - newLine.length)))
+        writer.write(newLine)
+        writer.newLine()
+    }
+    writer.close()
 }
 
 /**
