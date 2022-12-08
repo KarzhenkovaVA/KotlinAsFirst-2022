@@ -129,6 +129,12 @@ Basic, Ruby, Swift.
         )
         File("temp.txt").delete()
 
+        centerFile("input/center_in2.txt", "temp.txt")
+        assertFileContent(
+            "temp.txt",
+            """ААБ; ЛА"""
+        )
+
     }
 
     @Test
