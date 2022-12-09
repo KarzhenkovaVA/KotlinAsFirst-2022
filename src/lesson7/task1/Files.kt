@@ -150,18 +150,12 @@ fun appendSpaces(count: Int): String {
 
 fun centerFile(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    var maxLength = 0
-    var counter = 0
-    for (line in File(inputName).readLines()) {
-        if (line.length > maxLength) maxLength = line.length
-        counter++
-    }
-    for (line in File(inputName).readLines()) {
-        val newLine = line.trim()
-        if (counter == 1) writer.write(newLine)
-        else {
-            writer.write(appendSpaces((maxLength - newLine.length)))
-            writer.write(newLine)
+    val maxLength = File(inputName).readLines().map { it.trim().length }.maxOrNull()
+    if (maxLength != null) {
+        for (line in File(inputName).readLines()) {
+            val newLine2 = line.trim()
+            writer.write(appendSpaces((maxLength!! - newLine2.length)))
+            writer.write(newLine2)
             writer.newLine()
         }
     }
