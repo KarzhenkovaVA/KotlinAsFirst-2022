@@ -274,7 +274,6 @@ fun mostExpensive(description: String): String {
         goodsWithPrices[helperList[1].toDouble()] = helperList[0]
     }
     val maximum = goodsWithPrices.maxOf { it.key }
-    if (maximum == 0.0) return "Any good with price 0.0"
     return goodsWithPrices[maximum].toString()
 }
 
