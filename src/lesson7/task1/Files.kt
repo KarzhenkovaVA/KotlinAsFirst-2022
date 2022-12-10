@@ -86,9 +86,14 @@ fun deleteMarked(inputName: String, outputName: String) {
  *
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
-    TODO()
+    val result = mutableMapOf<String, Int>()
+    for (element in substrings) {
+        var counter = 0
+        File(inputName).readLines().forEach { counter += Regex(element.lowercase()).findAll(it.lowercase()).count() }
+        result[element] = counter
+    }
+    return result
 }
-
 
 /**
  * Средняя (12 баллов)
@@ -315,7 +320,23 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    val list = mutableListOf<String>()
+    val text = File(inputName).readLines().sortedByDescending { it.length }
+    var maxLength = text[0].length
+    for (word in text) {
+        val newWord = word.lowercase().split("").toSet().drop(1)
+        if (newWord.size == word.length && word.length == maxLength) list.add(word)
+    }
+    if (list.size == 1) writer.write(list[0])
+    else {
+        list.dropLast(1).forEach {
+            writer.write(it)
+            writer.write(", ")
+        }
+        writer.write(list.last())
+    }
+    writer.close()
 }
 
 /**
@@ -506,9 +527,45 @@ fun markdownToHtml(inputName: String, outputName: String) {
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    val result = (lhv * rhv).toString().length + 1
+    writer.write(appendSymbol(result - lhv.toString().length, " "))
+    writer.write(lhv.toString())
+    writer.newLine()
+    writer.write("*")
+    writer.write(appendSymbol((result - rhv.toString().length) - 1, " "))
+    writer.write(rhv.toString())
+    writer.newLine()
+    writer.write(appendSymbol(result, "-"))
+    writer.newLine()
+    var counter = 0
+    var newRhv = rhv
+    while (newRhv > 0) {
+        val num = lhv * (newRhv % 10)
+        if (counter >= 1) {
+            writer.write("+")
+            writer.write(appendSymbol(result - num.toString().length - 1 - counter, " "))
+        } else writer.write(appendSymbol(result - num.toString().length - counter, " "))
+        writer.write(num.toString())
+        writer.newLine()
+        counter++
+        newRhv /= 10
+    }
+    writer.write(appendSymbol(result, "-"))
+    writer.newLine()
+    writer.write(appendSymbol(result - (lhv * rhv).toString().length, " "))
+    writer.write((lhv * rhv).toString())
+    writer.close()
 }
 
+fun appendSymbol(count: Int, symbol: String): String {
+    val result = StringBuilder()
+    for (i in 0 until count) {
+        result.append(symbol)
+    }
+    return result.toString()
+
+}
 
 /**
  * Сложная (25 баллов)
