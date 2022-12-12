@@ -129,6 +129,8 @@ fun dateDigitToStr(digital: String): String {
         else String.format("%d %s %d", day, listOfMonths()[month - 1], year)
     } catch (e: NumberFormatException) {
         ""
+    } catch (e: ArrayIndexOutOfBoundsException) {
+        ""
     }
 }
 
