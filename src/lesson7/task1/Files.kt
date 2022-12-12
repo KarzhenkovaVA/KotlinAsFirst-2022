@@ -151,9 +151,7 @@ fun sibilants(inputName: String, outputName: String) {
  */
 fun appendSpaces(count: Int): String {
     val result = StringBuilder()
-    for (i in 1..(count / 2)) {
-        result.append(" ")
-    }
+    " ".repeat(count / 2).forEach { result.append(it) }
     return result.toString()
 }
 
@@ -613,7 +611,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     writer.write(makeString(len1, "-"))
     writer.newLine()
 
-    if (result != 0) {
+    if (result.length() > 1) {
         val num1 = lhvList.take(--len1).joinToString("").toInt()
         val diff1 = num1 - res1
         var ost = diff1 * 10 + lhvList[len1]
