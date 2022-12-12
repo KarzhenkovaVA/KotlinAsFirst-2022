@@ -4,6 +4,7 @@ package lesson7.task1
 
 import java.io.File
 import java.lang.StringBuilder
+import kotlin.math.*
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -631,8 +632,9 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             writer.write(res2.toString())
             writer.newLine()
 
-            writer.write(spaces)
-            writer.write(makeString(res2.length() + 1, "-"))
+            val maxLength = max(res2.length() + 1, ost.length())
+            writer.write(makeString(len1 + 2 - maxLength))
+            writer.write(makeString(maxLength, "-"))
             writer.newLine()
 
             writer.write(makeString(len1 + 2 - diff2.length()))
