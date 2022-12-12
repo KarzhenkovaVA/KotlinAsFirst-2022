@@ -4,6 +4,7 @@ package lesson6.task1
 
 import lesson2.task2.daysInMonth
 import java.lang.IllegalArgumentException
+import java.lang.NumberFormatException
 import java.util.IllformedLocaleException
 
 // Урок 6: разбор строк, исключения
@@ -102,7 +103,7 @@ fun dateStrToDigit(str: String): String {
         val year = data[2].toInt()
         if (day <= 0 || year <= 0 || daysInMonth(month, year) < day) ""
         else String.format("%02d.%02d.%d", day, month, year)
-    } catch (e: Exception) {
+    } catch (e: NumberFormatException) {
         ""
     }
 }
@@ -126,7 +127,7 @@ fun dateDigitToStr(digital: String): String {
         val year = data[2].toInt()
         if (day <= 0 || month <= 0 || year <= 0 || daysInMonth(month, year) < day) ""
         else String.format("%d %s %d", day, listOfMonths()[month - 1], year)
-    } catch (e: Exception) {
+    } catch (e: NumberFormatException) {
         ""
     }
 }
@@ -148,12 +149,10 @@ fun dateDigitToStr(digital: String): String {
 fun flattenPhoneNumber(phone: String): String {
     val match = Regex("""^\s*(\+[\s-]*\d+[\s-]*)?([\s-]*(\(([\s-]*\d)+[\s-]*\))?([\s-]*\d)+[\s-]*)$""")
         .find(phone)
-    if (match != null) {
-        val result = match.groupValues
-        val setOfSymbols = setOf('-', ' ', '(', ')')
-        return (result[1] + result[2]).filter { it !in setOfSymbols }
-    }
-    return ""
+    if (match == null) return ""
+    val result = match.groupValues
+    val setOfSymbols = setOf('-', ' ', '(', ')')
+    return (result[1] + result[2]).filter { it !in setOfSymbols }
 }
 
 /**
