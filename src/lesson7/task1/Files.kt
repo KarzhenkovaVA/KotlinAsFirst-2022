@@ -644,7 +644,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             writer.newLine()
         }
     } else {
-        writer.write(makeString(lhvList.size))
+        writer.write(makeString(lhvList.size + 1 - (lhv - res1).length()))
         writer.write((lhv - res1).toString())
     }
 
