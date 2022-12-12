@@ -587,6 +587,70 @@ fun makeWriting(symbol: String, number: Int, length: Int): String {
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    val result = lhv / rhv
+
+    writer.write(" ")
+    writer.write(lhv.toString())
+    writer.write(" ")
+    writer.write("|")
+    writer.write(" ")
+    writer.write(rhv.toString())
+    writer.newLine()
+
+    val resultList = result.toString().toList().map { it.code - '0'.code }
+    val lhvList = lhv.toString().toList().map { it.code - '0'.code }
+
+    val res1 = rhv * resultList[0]
+    var len1 = res1.length() + 1
+
+    writer.write("-")
+    writer.write(res1.toString())
+    writer.write(makeString(lhv.length() + 4 - len1))
+    writer.write(result.toString())
+    writer.newLine()
+
+    writer.write(makeString(len1, "-"))
+    writer.newLine()
+
+    if (result != 0) {
+        val num1 = lhvList.take(--len1).joinToString("").toInt()
+        val diff1 = num1 - res1
+        var ost = diff1 * 10 + lhvList[len1]
+
+        writer.write(makeString(len1 + 1 - diff1.length()))
+        writer.write(diff1.toString())
+        writer.write((lhvList[len1]).toString())
+        writer.newLine()
+
+        for (element in resultList.drop(1)) {
+            val res2 = rhv * element
+            val diff2 = ost - res2
+            val spaces = makeString(len1 + 1 - res2.length())
+
+            writer.write(spaces)
+            writer.write("-")
+            writer.write(res2.toString())
+            writer.newLine()
+
+            writer.write(spaces)
+            writer.write(makeString(res2.length() + 1, "-"))
+            writer.newLine()
+
+            writer.write(makeString(len1 + 2 - diff2.length()))
+            writer.write(diff2.toString())
+            if (len1 < lhvList.size - 1) {
+                ost = diff2 * 10 + lhvList[++len1]
+                writer.write((lhvList[len1]).toString())
+            } else ost = diff2
+            writer.newLine()
+        }
+    } else {
+        writer.write(makeString(lhvList.size))
+        writer.write((lhv - res1).toString())
+    }
+
+    writer.close()
 }
 
+fun Int.length() = this.toString().length
