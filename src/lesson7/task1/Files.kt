@@ -592,19 +592,19 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val lhvLength = lhv.length()
     val resultList = result.toString().toList().map { it.code - '0'.code }
     val lhvList = lhv.toString().toList().map { it.code - '0'.code }
+    val res1 = rhv * resultList[0]
+    var len1 = res1.length() + 1
 
     val rightLhv: Int
-    if (result == 0 && lhv > 9) rightLhv = lhvLength
-    else rightLhv = lhvLength + 1
+    if (resultLength > 1) rightLhv = lhvLength + 1
+    else if (res1.length() == lhvLength) rightLhv = lhvLength + 1
+    else rightLhv = lhvLength
 
     writer.write(makeString(rightLhv - lhvLength))
     writer.write(lhv.toString())
     writer.write(" | ")
     writer.write(rhv.toString())
     writer.newLine()
-
-    val res1 = rhv * resultList[0]
-    var len1 = res1.length() + 1
 
     if (resultLength == 1) writer.write(makeString(rightLhv - len1))
     writer.write("-")
