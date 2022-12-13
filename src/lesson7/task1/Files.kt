@@ -588,31 +588,37 @@ fun makeWriting(symbol: String, number: Int, length: Int): String {
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     val result = lhv / rhv
-
-    writer.write(" ")
-    writer.write(lhv.toString())
-    writer.write(" ")
-    writer.write("|")
-    writer.write(" ")
-    writer.write(rhv.toString())
-    writer.newLine()
-
+    val resultLength = result.length()
+    val lhvLength = lhv.length()
     val resultList = result.toString().toList().map { it.code - '0'.code }
     val lhvList = lhv.toString().toList().map { it.code - '0'.code }
+
+    val rightLhv: Int
+    if (result == 0 && lhv > 9) rightLhv = lhvLength
+    else rightLhv = lhvLength + 1
+
+    writer.write(makeString(rightLhv - lhvLength))
+    writer.write(lhv.toString())
+    writer.write(" | ")
+    writer.write(rhv.toString())
+    writer.newLine()
 
     val res1 = rhv * resultList[0]
     var len1 = res1.length() + 1
 
+    if (resultLength == 1) writer.write(makeString(rightLhv - len1))
     writer.write("-")
     writer.write(res1.toString())
-    writer.write(makeString(lhv.length() + 4 - len1))
+    if (resultLength == 1) writer.write("   ")
+    else writer.write(makeString(rightLhv - len1 + 3))
     writer.write(result.toString())
     writer.newLine()
 
-    writer.write(makeString(len1, "-"))
+    if (resultLength == 1) writer.write(makeString(rightLhv, "-"))
+    else writer.write(makeString(len1, "-"))
     writer.newLine()
 
-    if (result.length() > 1) {
+    if (resultLength > 1) {
         val num1 = lhvList.take(--len1).joinToString("").toInt()
         val diff1 = num1 - res1
         var ost = diff1 * 10 + lhvList[len1]
@@ -646,7 +652,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             writer.newLine()
         }
     } else {
-        writer.write(makeString(lhvList.size + 1 - (lhv - res1).length()))
+        writer.write(makeString(rightLhv - (lhv - res1).length()))
         writer.write((lhv - res1).toString())
     }
 
